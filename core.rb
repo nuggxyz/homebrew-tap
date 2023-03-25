@@ -2,22 +2,23 @@
 #                https://rubydoc.brew.sh/Formula
 # PLEASE REMOVE ALL GENERATED COMMENTS BEFORE SUBMITTING YOUR PULL REQUEST!
 class Core < Formula
-    desc ""
-    homepage ""
-    url "core"
+    # desc ""
+    # homepage ""
+    url "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
     version "2023.03.25"
-    sha256 ""
-    license ""
+    # sha256 ""
+    # license ""
   
-    # depends_on "cmake" => :build
+    depends_on :xcode
+    uses_from_macos "curl", since: :monterey
   
-    def install
-      # ENV.deparallelize  # if your formula fails when building in parallel
-      # Remove unrecognized options if warned by configure
-      # https://rubydoc.brew.sh/Formula.html#std_configure_args-instance_method
-      system "./configure", *std_configure_args, "--disable-silent-rules"
-      # system "cmake", "-S", ".", "-B", "build", *std_cmake_args
-    end
+    # def install
+    #   # ENV.deparallelize  # if your formula fails when building in parallel
+    #   # Remove unrecognized options if warned by configure
+    #   # https://rubydoc.brew.sh/Formula.html#std_configure_args-instance_method
+    #   system "./configure", *std_configure_args, "--disable-silent-rules"
+    #   # system "cmake", "-S", ".", "-B", "build", *std_cmake_args
+    # end
   
     test do
       # `test do` will create, run in and delete a temporary directory.
