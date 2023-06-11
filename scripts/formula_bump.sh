@@ -7,7 +7,7 @@ DID_UPDATE=0
 
 for formula in $formulas; do
 
-	file=Formula/$formula
+	file=./Formula/$formula
 
 	if [[ ! -f "$file" ]]; then
 		echo "Formula $formula not found. Exiting."
