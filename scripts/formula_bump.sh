@@ -7,8 +7,7 @@ DID_UPDATE=0
 
 (
 	cd ./.git || exit 1
-	sudo chgrp -R groupname .
-	sudo chmod -R g+rwX .
+	sudo chmod -R a+rwX .
 	sudo find . -type d -exec chmod g+s '{}' +
 )
 
