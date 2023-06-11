@@ -19,7 +19,7 @@
                             {
                                 name: Update formula,
                                 id: script,
-                                run: "chmod +x .git/objects && ${{ github.workspace }}/scripts/formula_bump.sh",
+                                run: "${{ github.workspace }}/scripts/formula_bump.sh",
                             },
                             {
                                 name: Bump version and push tag,
@@ -46,7 +46,7 @@
                                 with:
                                     {
                                         file_pattern: "Formula/*.rb",
-                                        commit_message: "(bump) ${{ steps.tag_version.outputs.tag }}",
+                                        commit_message: "[bump] ${{ steps.tag_version.outputs.tag }}",
                                         commit_author: "github-actions <41898282+github-actions[bot]@users.noreply.github.com>",
                                     },
                             },
