@@ -8,28 +8,18 @@
         },
     permissions: { contents: write, packages: write },
     env: { GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}" },
-    jobs: { main: { runs-on: macos-latest, steps: [
+    jobs:
+        {
+            main:
+                {
+                    runs-on: macos-latest,
+                    steps:
+                        [
                             { name: Check out code, uses: actions/checkout@v3 },
-                            # {
-                            #     name: Update formula,
-                            #     id: script,
-                            #     run: "${{ github.workspace }}/scripts/formula_bump.sh",
-                            # },
-
                             {
-                                name: Update Homebrew formula,
+                                name: Update formula,
                                 id: script,
-                                uses: dawidd6/action-homebrew-bump-formula@v3,
-                                with: {
-                                        # Required, custom personal GitHub access token with only the 'public_repo' scope enabled
-                                        token: "${{ secrets.PUBLIC_ACTION_READ_GOD }}",
-                                        # Bump all outdated formulae in this tap
-                                        tap: "${{ github.repository}}",
-                                        # Optional, if don't want to check for already open PRs
-                                        force: false, # true
-                                        # Need to set this input if want to use `brew livecheck`
-                                        livecheck: true,
-                                    },
+                                run: "${{ github.workspace }}/scripts/formula_bump.sh",
                             },
                             {
                                 name: Bump version and push tag,
@@ -50,7 +40,7 @@
                                 with:
                                     {
                                         file_pattern: "Formula/*.rb",
-                                        commit_message: "[bump] ${{ steps.tag_version.outputs.tag }}",
+                                        commit_message: "(bump) ${{ steps.tag_version.outputs.tag }}",
                                         commit_author: "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>",
                                     },
                             },
@@ -71,5 +61,7 @@
                                         prerelease: false,
                                     },
                             },
-                        ] } },
+                        ],
+                },
+        },
 }
