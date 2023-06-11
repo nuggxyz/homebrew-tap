@@ -37,6 +37,10 @@
                                 name: commit,
                                 id: commit,
                                 uses: stefanzweifel/git-auto-commit-action@v4,
+                                env:
+                                    {
+                                        GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}",
+                                    },
                                 with:
                                     {
                                         file_pattern: "Formula/*.rb",
