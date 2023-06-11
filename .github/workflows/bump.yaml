@@ -1,0 +1,64 @@
+{
+    name: bump,
+    on:
+        {
+            schedule: [{ cron: "0 0 * * *" }],
+            workflow_dispatch: {},
+            push: { branches: [main] },
+        },
+    permissions: { contents: write, packages: write },
+    env: { GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}" },
+    jobs:
+        {
+            main:
+                {
+                    runs-on: ubuntu-latest,
+                    steps:
+                        [
+                            { name: Check out code, uses: actions/checkout@v2 },
+
+                            {
+                                name: Update formula,
+                                id: script,
+                                run: "../scripts/formula_bump.sh",
+                            },
+                            {
+                                name: Bump version and push tag,
+                                if: "${{ steps.script.outputs.DID_UPDATE == '1' }}",
+                                id: tag_version,
+                                uses: anothrNick/github-tag-action@1.61.0,
+                                env:
+                                    {
+                                        GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}",
+                                        WITH_V: false,
+                                        DEFAULT_BUMP: patch,
+                                        DRY_RUN: true,
+                                    },
+                            },
+                            {
+                                name: commit,
+                                if: "${{ steps.script.outputs.DID_UPDATE == '1' }}",
+                                uses: stefanzweifel/git-auto-commit-action@v4,
+                                with: { file_pattern: "Formula/*.rb" },
+                            },
+                            {
+                                name: Create GitHub Release,
+                                if: "${{ steps.script.outputs.DID_UPDATE == '1' }}",
+                                uses: ncipollo/release-action@v1,
+                                env:
+                                    {
+                                        GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}",
+                                    },
+                                with:
+                                    {
+                                        tag: "${{ steps.tag_version.outputs.tag }}",
+                                        name: "${{ steps.tag_version.outputs.tag }}",
+                                        body: "Auto-generated release for ${{ steps.tag_version.outputs.tag }}\n\n${{ steps.script.outputs.CHANGELOG }}",
+                                        draft: false,
+                                        prerelease: false,
+                                    },
+                            },
+                        ],
+                },
+        },
+}

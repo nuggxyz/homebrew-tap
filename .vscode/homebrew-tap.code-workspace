@@ -14,36 +14,6 @@
 		"search.useIgnoreFiles": true,
 		"debug.console.wordWrap": false,
 		/* //////////////////////////////////////////////
-							FILES
-		////////////////////////////////////////////// */
-		"material-icon-theme.folders.associations": {
-			"dynamo": "database",
-			"mw": "middleware",
-			"ecs": "container",
-			"logs": "batch",
-			"blocks": "queue",
-			"structure": "database",
-			"events": "api",
-			"integrity": "admin",
-			"internal": "core",
-		},
-		"material-icon-theme.files.associations": {
-			".buildrc": "auto",
-			"*.bats": "tune",
-			"justfile": "makefile",
-		},
-		"files.exclude": {
-			"terraform/": true,
-			".plan": true,
-		},
-		"files.associations": {
-			".buildrc": "yaml",
-		},
-		/* //////////////////////////////////////////////
-							  GO
-		////////////////////////////////////////////// */
-		"go.testTimeout": "90s",
-		/* //////////////////////////////////////////////
 							YAML
 		////////////////////////////////////////////// */
 		"yaml.format.enable": true,
@@ -57,33 +27,5 @@
 		"yaml.format.proseWrap": "preserve",
 		"yaml.format.singleQuote": false,
 		"yaml.extension.recommendations": true,
-		/* //////////////////////////////////////////////
-							TERRAFORM
-		////////////////////////////////////////////// */
-		"terraform.codelens.referenceCount": false,
-		"terraform.languageServer.enable": true,
-		"terraform.experimentalFeatures.validateOnSave": true,
-		"[terraform]": {
-			"editor.defaultFormatter": "hashicorp.terraform-preview",
-			"editor.formatOnSave": false,
-			"editor.codeActionsOnSave": {
-				"source.formatAll.terraform": false
-			},
-		},
-		"[terraform-vars]": {
-			"editor.defaultFormatter": "hashicorp.terraform-preview",
-			"editor.formatOnSave": false,
-			"editor.codeActionsOnSave": {
-				"source.formatAll.terraform": true
-			},
-		},
-		"emeraldwalk.runonsave": {
-			"commands": [
-				{
-					"match": "\\.tf$|\\.tfvars$|\\.hcl$|\\.hclvars$",
-					"cmd": "terraform fmt \"${file}\" && sed -e':a' -e's/^\\(\\t*\\)  /\\1\\t/;ta' \"${file}\" > \"${file}\"-notab && mv \"${file}\"-notab \"${file}\""
-				},
-			]
-		},
 	}
 }
