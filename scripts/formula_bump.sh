@@ -2,7 +2,7 @@
 
 formulas=$(find Formula -name "*.rb")
 
-CHANGELOG="## updated formulas"
+SCRIPT_CHANGELOG="## updated formulas"
 DID_UPDATE=0
 
 for formula in $formulas; do
@@ -32,9 +32,9 @@ for formula in $formulas; do
 		sed -i "s/\(version \"\)[^\"]*/\1${LATEST_RELEASE}/" "$file"
 		echo "Updated $formula to version ${LATEST_RELEASE}."
 		DID_UPDATE=1
-		CHANGELOG="$CHANGELOG\\n- $formula: \`${version}\` -> \`${LATEST_RELEASE}\`"
+		SCRIPT_CHANGELOG="$SCRIPT_CHANGELOG\\n- $formula: \`${version}\` -> \`${LATEST_RELEASE}\`"
 	fi
 done
 
 echo "DID_UPDATE=$DID_UPDATE" >>"$GITHUB_OUTPUT"
-echo "CHANGELOG=$CHANGELOG" >>"$GITHUB_OUTPUT"
+echo "SCRIPT_CHANGELOG=$SCRIPT_CHANGELOG" >>"$GITHUB_OUTPUT"

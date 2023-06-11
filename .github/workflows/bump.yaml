@@ -66,7 +66,7 @@
                                     {
                                         tag: "${{ steps.tag_version.outputs.tag }}",
                                         name: "${{ steps.tag_version.outputs.tag }}",
-                                        body: "Auto-generated release for ${{ steps.tag_version.outputs.tag }}\n\n${{ steps.script.outputs.CHANGELOG }}",
+                                        body: "Auto-generated release for ${{ steps.tag_version.outputs.tag }}\n\n${{ steps.script.outputs.SCRIPT_CHANGELOG }}",
                                         draft: false,
                                         prerelease: false,
                                     },
