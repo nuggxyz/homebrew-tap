@@ -7,6 +7,8 @@ DID_UPDATE=0
 
 for formula in $formulas; do
 
+	formula=$(basename "$formula" .rb)
+
 	# Get the latest release from GitHub API for the tftab repo
 	LATEST_RELEASE=$(curl --silent "https://api.github.com/repos/nuggxyz/$formula/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
 
