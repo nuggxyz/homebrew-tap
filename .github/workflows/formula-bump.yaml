@@ -1,5 +1,5 @@
 {
-    name: bumps,
+    name: formula-bump,
     on:
         {
             schedule: [{ cron: "0 0 * * *" }],
@@ -26,14 +26,8 @@
                                 run: "${{ github.workspace }}/scripts/formula_bump.sh",
                             },
                             {
-                                name: checks,
-                                id: stat,
-                                run: "stat .git/objects",
-                            },
-                            {
                                 name: Bump version and push tag,
                                 id: tag_version,
-                                if: "${{ steps.script.outputs.DID_UPDATE == '1' }}",
                                 uses: anothrNick/github-tag-action@1,
                                 env:
                                     {
@@ -44,11 +38,6 @@
                                     },
                             },
                             {
-                                name: checks,
-                                id: stat2,
-                                run: "stat .git/objects",
-                            },
-                            {
                                 name: commit,
                                 id: commit,
                                 if: "${{ steps.script.outputs.DID_UPDATE == '1' }}",
@@ -56,13 +45,12 @@
                                 with:
                                     {
                                         file_pattern: "Formula/*.rb",
-                                        commit_message: "(bump) ${{ steps.tag_version.outputs.tag }}",
+                                        commit_message: "(formula-bump) ${{ steps.tag_version.outputs.tag }}",
                                         commit_author: "github-actions <41898282+github-actions[bot]@users.noreply.github.com>",
                                     },
                             },
                             {
                                 name: Create GitHub Release,
-                                if: "${{ steps.script.outputs.DID_UPDATE == '1' }}",
                                 uses: ncipollo/release-action@v1,
                                 env:
                                     {
