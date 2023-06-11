@@ -20,7 +20,7 @@
                             {
                                 name: Update formula,
                                 id: script,
-                                run: "../scripts/formula_bump.sh",
+                                run: "${{ github.workspace }}/scripts/formula_bump.sh",
                             },
                             {
                                 name: Bump version and push tag,
