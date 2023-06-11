@@ -7,7 +7,7 @@ class Tftab < Formula
 	homepage "https://github.com/nuggxyz/tftab"
 
 	# The version of the package that this formula will install
-	version "0.0.18"
+	version "0.0.19"
 
 	# List of dependencies needed for this package
 	depends_on "tfenv"
