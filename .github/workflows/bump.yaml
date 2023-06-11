@@ -46,6 +46,8 @@
                                 with:
                                     {
                                         file_pattern: "Formula/*.rb",
+                                        skip_checkout: true,
+                                        skip_dirty_check: true,
                                         commit_message: "(bump) ${{ steps.tag_version.outputs.tag }}",
                                         commit_author: "github-actions <41898282+github-actions[bot]@users.noreply.github.com>",
                                     },
