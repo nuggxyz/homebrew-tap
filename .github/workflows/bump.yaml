@@ -22,9 +22,9 @@
                                 uses: dawidd6/action-homebrew-bump-formula@v3,
                                 with: {
                                         # Required, custom personal GitHub access token with only the 'public_repo' scope enabled
-                                        token: "${{ secrets.GITHUB_TOKEN }}",
+                                        token: "${{ secrets.PUBLIC_ACTION_READ_GOD }}",
                                         # Bump all outdated formulae in this tap
-                                        # tap: "${{ github.repository}}",
+                                        tap: "${{ github.repository}}",
                                         # Optional, if don't want to check for already open PRs
                                         force: false, # true
                                         # Need to set this input if want to use `brew livecheck`
