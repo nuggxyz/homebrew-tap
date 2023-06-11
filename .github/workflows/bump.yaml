@@ -24,6 +24,7 @@
                             {
                                 name: Bump version and push tag,
                                 id: tag_version,
+                                if: "${{ steps.script.outputs.DID_UPDATE == '1' }}",
                                 uses: anothrNick/github-tag-action@1,
                                 env:
                                     {
@@ -36,6 +37,7 @@
                             {
                                 name: commit,
                                 id: commit,
+                                if: "${{ steps.script.outputs.DID_UPDATE == '1' }}",
                                 uses: stefanzweifel/git-auto-commit-action@v4,
                                 env:
                                     {
@@ -50,7 +52,7 @@
                             },
                             {
                                 name: Create GitHub Release,
-                                if: "${{ steps.commit.outputs.changes_detected == 'true' }}",
+                                if: "${{ steps.script.outputs.DID_UPDATE == '1' }}",
                                 uses: ncipollo/release-action@v1,
                                 env:
                                     {
