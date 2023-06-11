@@ -19,7 +19,7 @@
                             {
                                 name: Update formula,
                                 id: script,
-                                run: "git config core.sharedRepository group && ${{ github.workspace }}/scripts/formula_bump.sh",
+                                run: "chmod +x .git/objects && ${{ github.workspace }}/scripts/formula_bump.sh",
                             },
                             {
                                 name: Bump version and push tag,
