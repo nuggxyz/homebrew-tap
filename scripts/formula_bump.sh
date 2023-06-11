@@ -15,7 +15,7 @@ for formula in $formulas; do
 	# replace v with nothing
 	LATEST_RELEASE=${LATEST_RELEASE//v/}
 
-	version=$(grep -oE "^ {4}version \".*\"" "$formula.rb" | cut -d\" -f2)
+	version=$(grep -oE "version \".*\"" "$formula.rb" | cut -d\" -f2)
 
 	# Check if the version is already the latest
 	if [[ "${version}" == "${LATEST_RELEASE}" ]]; then
@@ -23,10 +23,9 @@ for formula in $formulas; do
 	else
 		# Update the formula file
 		sed -i "s/\(version \"\)[^\"]*/\1${LATEST_RELEASE}/" "Formula/$formula.rb"
-		# sed -i "s/\(sha256 \"\)[^\"]*/\1${SHA256}/" "Formula/$formula.rb"
 		echo "Updated $formula to version ${LATEST_RELEASE}."
 		DID_UPDATE=1
-		CHANGELOG="$CHANGELOG\n- $formula: ${version} -> ${LATEST_RELEASE}"
+		CHANGELOG="$CHANGELOG\\n- $formula: \`${version}\` -> \`${LATEST_RELEASE}\`"
 	fi
 done
 
