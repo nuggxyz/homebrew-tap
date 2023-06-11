@@ -7,7 +7,7 @@ DID_UPDATE=0
 
 (
 	cd ./.git/objects || exit 1
-	sudo chmod -R a+rwX .
+	sudo chmod -R ug+w .
 	sudo find . -type d -exec chmod g+s '{}' +
 )
 
