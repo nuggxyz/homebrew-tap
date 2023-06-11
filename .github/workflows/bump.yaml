@@ -39,7 +39,11 @@
                                 name: commit,
                                 if: "${{ steps.script.outputs.DID_UPDATE == '1' }}",
                                 uses: stefanzweifel/git-auto-commit-action@v4,
-                                with: { file_pattern: "Formula/*.rb" },
+                                with:
+                                    {
+                                        file_pattern: "Formula/*.rb",
+                                        commit_message: "[bump] ${{ steps.tag_version.outputs.tag }}",
+                                    },
                             },
                             {
                                 name: Create GitHub Release,
