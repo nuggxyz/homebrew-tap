@@ -5,12 +5,6 @@ formulas=$(find Formula -name "*.rb")
 SCRIPT_CHANGELOG="## updated formulas"
 DID_UPDATE=0
 
-(
-	cd ./.git/objects || exit 1
-	sudo chmod -R ug+w .
-	sudo find . -type d -exec chmod g+s '{}' +
-)
-
 for formula in $formulas; do
 
 	file=./$formula
@@ -38,7 +32,7 @@ for formula in $formulas; do
 		sed -i "s/\(version \"\)[^\"]*/\1${LATEST_RELEASE}/" "$file"
 		echo "Updated $formula to version ${LATEST_RELEASE}."
 		DID_UPDATE=1
-		SCRIPT_CHANGELOG="$SCRIPT_CHANGELOG\\n- $formula: \`${version}\` -> \`${LATEST_RELEASE}\`"
+		SCRIPT_CHANGELOG="$SCRIPT_CHANGELOG  \n  \n- $formula: \`${version}\` -> \`${LATEST_RELEASE}\`"
 	fi
 done
 
