@@ -44,6 +44,11 @@
                                     },
                             },
                             {
+                                name: checks,
+                                id: stat2,
+                                run: "stat .git/objects",
+                            },
+                            {
                                 name: commit,
                                 id: commit,
                                 if: "${{ steps.script.outputs.DID_UPDATE == '1' }}",
