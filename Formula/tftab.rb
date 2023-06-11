@@ -2,7 +2,7 @@ class Tftab < Formula
     desc "Runs terraform fmt but using tabs instead of spaces."
     homepage "https://github.com/nuggxyz/homebrew-tap"
 
-	version "0.0.12"
+	version "0.0.13"
 
     depends_on "tfenv"
 
