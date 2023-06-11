@@ -8,7 +8,13 @@
         },
     permissions: { contents: write, packages: write },
     env: { GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}", BUILDRC: .buildrc },
-    jobs: { main: { runs-on: ubuntu-latest, steps: [
+    jobs:
+        {
+            main:
+                {
+                    runs-on: ubuntu-latest,
+                    steps:
+                        [
                             {
                                 name: Check out code,
                                 uses: actions/checkout@v3,
@@ -19,16 +25,18 @@
                                 id: script,
                                 run: "${{ github.workspace }}/scripts/formula_bump.sh",
                             },
+
                             {
-                                name: "get next tag",
-                                id: "next-tag",
-                                uses: "nuggxyz/ci/.github/cli/next-tag@main",
-                                with:
+                                name: Bump version and push tag,
+                                id: tag_version,
+                                if: "${{ steps.script.outputs.DID_UPDATE == '1' || github.event_name == 'push' }}",
+                                uses: anothrNick/github-tag-action@1,
+                                env:
                                     {
-                                        repo: "${{ github.repository }}",
-                                        action_token: "${{ secrets.GITHUB_TOKEN }}",
-                                        pkg_read_token: "${{ secrets.PACKAGE_READ_GOD }}",
-                                        buildrc_file: "${{ env.BUILDRC }}",
+                                        GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}",
+                                        WITH_V: false,
+                                        DEFAULT_BUMP: patch,
+                                        DRY_RUN: true,
                                     },
                             },
                             {
@@ -38,7 +46,7 @@
                                 uses: stefanzweifel/git-auto-commit-action@v4,
                                 env:
                                     {
-                                        TAG: "${{ fromJson(steps.next-tag.outputs.result).full }}",
+                                        TAG: "${{ steps.tag_version.outputs.new_tag }}",
                                     },
                                 with:
                                     {
@@ -47,20 +55,6 @@
                                         commit_author: "github-actions <41898282+github-actions[bot]@users.noreply.github.com>",
                                     },
                             },
-                            # {
-                            #     name: Bump version and push tag,
-                            #     id: tag_version,
-                            #     if: "${{ steps.script.outputs.DID_UPDATE == '1' || github.event_name == 'push' }}",
-                            #     uses: anothrNick/github-tag-action@1,
-                            #     env:
-                            #         {
-                            #             GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}",
-                            #             WITH_V: false,
-                            #             DEFAULT_BUMP: patch,
-                            #             DRY_RUN: true,
-                            #         },
-                            # },
-
                             {
                                 name: Create GitHub Release,
                                 uses: ncipollo/release-action@v1,
@@ -68,7 +62,7 @@
                                 env:
                                     {
                                         GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}",
-                                        TAG: "${{ fromJson(steps.next-tag.outputs.result).full }}",
+                                        TAG: "${{ steps.tag_version.outputs.new_tag }}",
                                     },
                                 with:
                                     {
@@ -79,5 +73,7 @@
                                         prerelease: false,
                                     },
                             },
-                        ] } },
+                        ],
+                },
+        },
 }
