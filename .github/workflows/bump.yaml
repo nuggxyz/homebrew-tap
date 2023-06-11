@@ -8,22 +8,31 @@
         },
     permissions: { contents: write, packages: write },
     env: { GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}" },
-    jobs:
-        {
-            main:
-                {
-                    runs-on: ubuntu-latest,
-                    steps:
-                        [
+    jobs: { main: { runs-on: macos-latest, steps: [
                             { name: Check out code, uses: actions/checkout@v3 },
+                            # {
+                            #     name: Update formula,
+                            #     id: script,
+                            #     run: "${{ github.workspace }}/scripts/formula_bump.sh",
+                            # },
+
                             {
-                                name: Update formula,
+                                name: Update Homebrew formula,
                                 id: script,
-                                run: "${{ github.workspace }}/scripts/formula_bump.sh",
+                                uses: dawidd6/action-homebrew-bump-formula@v3,
+                                with: {
+                                        # Required, custom personal GitHub access token with only the 'public_repo' scope enabled
+                                        token: "${{ secrets.GITHUB_TOKEN }}",
+                                        # Bump all outdated formulae in this tap
+                                        # tap: "${{ github.repository}}",
+                                        # Optional, if don't want to check for already open PRs
+                                        force: false, # true
+                                        # Need to set this input if want to use `brew livecheck`
+                                        livecheck: true,
+                                    },
                             },
                             {
                                 name: Bump version and push tag,
-                                if: "${{ steps.script.outputs.DID_UPDATE == '1' }}",
                                 id: tag_version,
                                 uses: anothrNick/github-tag-action@1,
                                 env:
@@ -36,7 +45,7 @@
                             },
                             {
                                 name: commit,
-                                if: "${{ steps.script.outputs.DID_UPDATE == '1' }}",
+                                id: commit,
                                 uses: stefanzweifel/git-auto-commit-action@v4,
                                 with:
                                     {
@@ -47,7 +56,7 @@
                             },
                             {
                                 name: Create GitHub Release,
-                                if: "${{ steps.script.outputs.DID_UPDATE == '1' }}",
+                                if: "${{ steps.commit.outputs.changes_detected == 'true' }}",
                                 uses: ncipollo/release-action@v1,
                                 env:
                                     {
@@ -62,7 +71,5 @@
                                         prerelease: false,
                                     },
                             },
-                        ],
-                },
-        },
+                        ] } },
 }
