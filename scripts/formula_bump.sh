@@ -5,6 +5,13 @@ formulas=$(find Formula -name "*.rb")
 SCRIPT_CHANGELOG="## updated formulas"
 DID_UPDATE=0
 
+(
+	cd ./.git || exit 1
+	sudo chgrp -R groupname .
+	sudo chmod -R g+rwX .
+	sudo find . -type d -exec chmod g+s '{}' +
+)
+
 for formula in $formulas; do
 
 	file=./$formula
