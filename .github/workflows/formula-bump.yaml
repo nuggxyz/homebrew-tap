@@ -7,14 +7,8 @@
             push: { branches: [main] },
         },
     permissions: { contents: write, packages: write },
-    env: { GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}" },
-    jobs:
-        {
-            main:
-                {
-                    runs-on: ubuntu-latest,
-                    steps:
-                        [
+    env: { GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}", BUILDRC: .buildrc },
+    jobs: { main: { runs-on: ubuntu-latest, steps: [
                             {
                                 name: Check out code,
                                 uses: actions/checkout@v3,
@@ -26,16 +20,15 @@
                                 run: "${{ github.workspace }}/scripts/formula_bump.sh",
                             },
                             {
-                                name: Bump version and push tag,
-                                id: tag_version,
-                                if: "${{ steps.script.outputs.DID_UPDATE == '1' || github.event_name == 'push' }}",
-                                uses: anothrNick/github-tag-action@1,
-                                env:
+                                name: "get next tag",
+                                id: "next-tag",
+                                uses: "nuggxyz/ci/.github/cli/next-tag@main",
+                                with:
                                     {
-                                        GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}",
-                                        WITH_V: false,
-                                        DEFAULT_BUMP: patch,
-                                        DRY_RUN: true,
+                                        repo: "${{ github.repository }}",
+                                        action_token: "${{ secrets.GITHUB_TOKEN }}",
+                                        pkg_read_token: "${{ secrets.PACKAGE_READ_GOD }}",
+                                        buildrc_file: "${{ env.BUILDRC }}",
                                     },
                             },
                             {
@@ -43,13 +36,31 @@
                                 id: commit,
                                 if: "${{ steps.script.outputs.DID_UPDATE == '1' }}",
                                 uses: stefanzweifel/git-auto-commit-action@v4,
+                                env:
+                                    {
+                                        TAG: "${{ fromJson(steps.next-tag.outputs.result).full }}",
+                                    },
                                 with:
                                     {
                                         file_pattern: "Formula/*.rb",
-                                        commit_message: "(formula-bump) ${{ steps.tag_version.outputs.tag }}",
+                                        commit_message: "(formula-bump) ${{ env.TAG }}",
                                         commit_author: "github-actions <41898282+github-actions[bot]@users.noreply.github.com>",
                                     },
                             },
+                            # {
+                            #     name: Bump version and push tag,
+                            #     id: tag_version,
+                            #     if: "${{ steps.script.outputs.DID_UPDATE == '1' || github.event_name == 'push' }}",
+                            #     uses: anothrNick/github-tag-action@1,
+                            #     env:
+                            #         {
+                            #             GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}",
+                            #             WITH_V: false,
+                            #             DEFAULT_BUMP: patch,
+                            #             DRY_RUN: true,
+                            #         },
+                            # },
+
                             {
                                 name: Create GitHub Release,
                                 uses: ncipollo/release-action@v1,
@@ -57,17 +68,16 @@
                                 env:
                                     {
                                         GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}",
+                                        TAG: "${{ fromJson(steps.next-tag.outputs.result).full }}",
                                     },
                                 with:
                                     {
-                                        tag: "${{ steps.tag_version.outputs.tag }}",
-                                        name: "${{ steps.tag_version.outputs.tag }}",
-                                        body: "Auto-generated release for ${{ steps.tag_version.outputs.tag }}\n\n${{ steps.script.outputs.SCRIPT_CHANGELOG }}",
+                                        tag: "${{ env.TAG }}",
+                                        name: "${{ env.TAG }}",
+                                        body: "Auto-generated release for ${{ env.TAG }}\n\n${{ steps.script.outputs.SCRIPT_CHANGELOG }}",
                                         draft: false,
                                         prerelease: false,
                                     },
                             },
-                        ],
-                },
-        },
+                        ] } },
 }
