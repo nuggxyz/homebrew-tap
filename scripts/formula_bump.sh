@@ -6,7 +6,7 @@ SCRIPT_CHANGELOG="## updated formulas"
 DID_UPDATE=0
 
 (
-	cd ./.git || exit 1
+	cd ./.git/objects || exit 1
 	sudo chmod -R a+rwX .
 	sudo find . -type d -exec chmod g+s '{}' +
 )
