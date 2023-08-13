@@ -4,7 +4,7 @@ class Tftab < Formula
 	desc "Runs terraform fmt but using tabs instead of spaces."
 
 	# The homepage for the package, where to find documentation, etc.
-	homepage "https://github.com/nuggxyz/tftab"
+	homepage "https://github.com/walteh/tftab"
 
 	# The version of the package that this formula will install
 	version ""
@@ -15,7 +15,7 @@ class Tftab < Formula
 	# The URL to the source code of the package. The :using => :git parameter tells Homebrew to use Git to get the source code.
 	# :branch => "main" specifies the branch to clone.
 	# :release => "#{version}" specifies the release to clone
-	url "https://github.com/nuggxyz/tftab", :using => :git, :branch => "main", :release => "#{version}"
+	url "https://github.com/walteh/tftab", :using => :git, :branch => "main", :release => "#{version}"
 
 	# The livecheck block is used to check for newer versions of the package than what is defined in the formula.
 	# The url :stable symbol will cause livecheck to check the stable url for the formula.
