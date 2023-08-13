@@ -7,7 +7,7 @@ class Tftab < Formula
 	homepage "https://github.com/walteh/tftab"
 
 	# The version of the package that this formula will install
-	version "0.1.0"
+	version "0.1.1"
 
 	# List of dependencies needed for this package
 	depends_on "tfenv"
