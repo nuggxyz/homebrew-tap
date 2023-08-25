@@ -21,6 +21,11 @@
                                 with: { clean: true, fetch-depth: 0 },
                             },
                             {
+                                name: Set up Homebrew,
+                                id: set-up-homebrew,
+                                uses: Homebrew/actions/setup-homebrew@master,
+                            },
+                            {
                                 name: Bump formulae,
                                 uses: Homebrew/actions/bump-formulae@master,
                                 with:
