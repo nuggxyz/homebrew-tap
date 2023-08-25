@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 formulas=$(find Formula -name "*.rb")
 
@@ -9,7 +9,7 @@ for formula in $formulas; do
 
 	file=./$formula
 
-	if [[ ! -f "$file" ]]; then
+	if [ ! -f "$file" ]; then
 		echo "Formula $file not found. Exiting."
 		exit 1
 	fi
@@ -25,12 +25,12 @@ for formula in $formulas; do
 	version=$(grep -oE "version \".*\"" "$file" | cut -d\" -f2)
 
 	# Check if the version is already the latest
-	if [[ "${version}" == "${LATEST_RELEASE}" ]]; then
+	if [ "${version}" == "${LATEST_RELEASE}" ]; then
 		echo "Already on latest version ${LATEST_RELEASE}. Exiting."
 	else
 		# Update the formula file
 		sed -i "s/\(version \"\)[^\"]*/\1${LATEST_RELEASE}/" "$file"
-		echo "Updated $formula to version ${LATEST_RELEASE}."
+		echo "Updated $formula from $version to ${LATEST_RELEASE}."
 		DID_UPDATE=1
 		SCRIPT_CHANGELOG="$SCRIPT_CHANGELOG  \n  \n- $formula: \`${version}\` -> \`${LATEST_RELEASE}\`"
 	fi

@@ -43,7 +43,7 @@ class Tftab < Formula
 		}
 	  EOS
 
-	  system "#{bin}/tftab", "#{testpath}/test.tf"
+	  system "#{bin}/tftab", "fmt #{testpath}/test.tf"
 	  assert_match /\t/, (testpath/"test.tf").read
 	end
   end

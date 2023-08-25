@@ -21,15 +21,17 @@
                                 with: { clean: true, fetch-depth: 0 },
                             },
                             {
-                                name: Update formula,
-                                id: script,
-                                run: "${{ github.workspace }}/scripts/formula_bump.sh",
+                                name: Bump formulae,
+                                uses: Homebrew/actions/bump-formulae@master,
+                                with:
+                                    {
+                                        token: "${{ secrets.GITHUB_TOKEN }}",
+                                        formulae: "tftab",
+                                    },
                             },
-
                             {
                                 name: Bump version and push tag,
                                 id: tag_version,
-                                if: "${{ steps.script.outputs.DID_UPDATE == '1' || github.event_name == 'push' }}",
                                 uses: anothrNick/github-tag-action@1,
                                 env:
                                     {
@@ -42,7 +44,6 @@
                             {
                                 name: commit,
                                 id: commit,
-                                if: "${{ steps.script.outputs.DID_UPDATE == '1' }}",
                                 uses: stefanzweifel/git-auto-commit-action@v4,
                                 env:
                                     {
@@ -58,7 +59,7 @@
                             {
                                 name: Create GitHub Release,
                                 uses: ncipollo/release-action@v1,
-                                if: "${{ steps.script.outputs.DID_UPDATE == '1' || github.event_name == 'push' }}",
+                                if: "${{ steps.commit.outputs.changes_detected == 'true' }}",
                                 env:
                                     {
                                         GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}",
@@ -68,7 +69,7 @@
                                     {
                                         tag: "${{ env.TAG }}",
                                         name: "${{ env.TAG }}",
-                                        body: "Auto-generated release for ${{ env.TAG }}\n\n${{ steps.script.outputs.SCRIPT_CHANGELOG }}",
+                                        body: "Auto-generated release for ${{ env.TAG }}",
                                         draft: false,
                                         prerelease: false,
                                     },
