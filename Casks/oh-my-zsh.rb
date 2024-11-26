@@ -1,11 +1,13 @@
 cask "oh-my-zsh" do
 	version "1.0.0"
-	sha256 :no_check
 
-	url "file:///dev/null" # No file to download
 	name "Oh My Zsh"
 	desc "Framework for managing your Zsh configuration"
 	homepage "https://ohmyz.sh/"
+
+		# https://apple.stackexchange.com/a/351612
+		url "file:///dev/null"
+		sha256 "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 	postflight do
 	  oh_my_zsh_dir = File.expand_path("~/.oh-my-zsh")
@@ -21,40 +23,33 @@ cask "oh-my-zsh" do
 	  end
 
 	  zshrc_path = File.expand_path("~/.zshrc")
-	  backup_path = "#{zshrc_path}.backup"
 
 	  # Backup existing .zshrc if present
 	  if File.exist?(zshrc_path)
-		File.rename(zshrc_path, backup_path)
-		puts "Backed up existing .zshrc to #{backup_path}."
+		puts "The .zshrc file already exists."
+	  else
+			  # Install new .zshrc from Oh My Zsh template
+			  template_path = File.join(oh_my_zsh_dir, "templates", "zshrc.zsh-template")
+			  FileUtils.cp(template_path, zshrc_path)
+			  puts "Installed new .zshrc from Oh My Zsh template."
 	  end
 
-	  # Install new .zshrc from Oh My Zsh template
-	  template_path = File.join(oh_my_zsh_dir, "templates", "zshrc.zsh-template")
-	  FileUtils.cp(template_path, zshrc_path)
-	  puts "Installed new .zshrc from Oh My Zsh template."
+	  # Check if existing .zshrc contains the Oh My Zsh source line
+	  if File.exist?(zshrc_path)
+		zshrc_content = File.read(zshrc_path)
+		unless zshrc_content.include?('source $ZSH/oh-my-zsh.sh')
+		  FileUtils.cp(zshrc_path, "#{zshrc_path}.backup")
+		  puts "Backed up existing .zshrc to .zshrc.backup."
+		  File.open(zshrc_path, "a") do |file|
+			file.puts 'source $ZSH/oh-my-zsh.sh'
+		  end
+		  puts "Added Oh My Zsh source line to existing .zshrc"
+		else
+		  puts "Oh My Zsh source line already exists in .zshrc"
+		end
+	  end
 
 	  puts "Oh My Zsh installation complete! Restart your terminal or source ~/.zshrc to apply changes."
-	end
-
-	uninstall_postflight do
-	  oh_my_zsh_dir = File.expand_path("~/.oh-my-zsh")
-	  zshrc_path = File.expand_path("~/.zshrc")
-	  backup_path = "#{zshrc_path}.backup"
-
-	  # Remove Oh My Zsh directory
-	  if File.exist?(oh_my_zsh_dir)
-		FileUtils.rm_rf(oh_my_zsh_dir)
-		puts "Removed Oh My Zsh directory: #{oh_my_zsh_dir}."
-	  end
-
-	  # Restore original .zshrc if backup exists
-	  if File.exist?(backup_path)
-		File.rename(backup_path, zshrc_path)
-		puts "Restored original .zshrc from backup."
-	  else
-		puts "No backup .zshrc found. Your .zshrc has not been restored."
-	  end
 	end
 
 	caveats <<~EOS
