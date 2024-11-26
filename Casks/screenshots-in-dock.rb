@@ -28,13 +28,15 @@ cask "screenshots-in-dock" do
 		screenshot_dir = File.expand_path("~/Screenshots/")
 
 		unless File.exist?(screenshot_dir)
-		  # Create the Screenshots folder
+		  puts "Screenshots folder does not exist. Creating it now... Password may be required."
 		  system_command "mkdir", args: ["-p", screenshot_dir], sudo: true
 		end
 
 		# Set macOS to save screenshots to the new location
 		system_command "defaults", args: ["write", "com.apple.screencapture", "location", screenshot_dir], sudo: false
+		system_command "defaults", args: ["write", "com.apple.screencapture", "target", "file"], sudo: false
 		system_command "killall", args: ["SystemUIServer"], sudo: false
+		puts "Screenshot location updated to #{screenshot_dir}"
 
 		# List current Dock items
 		dock_items_result = system_command dockutil_path, args: ["--list"], sudo: false
