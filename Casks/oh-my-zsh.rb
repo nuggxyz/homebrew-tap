@@ -5,9 +5,9 @@ cask "oh-my-zsh" do
 	desc "Framework for managing your Zsh configuration"
 	homepage "https://ohmyz.sh/"
 
-		# https://apple.stackexchange.com/a/351612
-		url "file:///dev/null"
-		sha256 "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+	# https://apple.stackexchange.com/a/351612
+	url "file:///dev/null"
+	sha256 "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 	postflight do
 	  oh_my_zsh_dir = File.expand_path("~/.oh-my-zsh")
@@ -28,10 +28,10 @@ cask "oh-my-zsh" do
 	  if File.exist?(zshrc_path)
 		puts "The .zshrc file already exists."
 	  else
-			  # Install new .zshrc from Oh My Zsh template
-			  template_path = File.join(oh_my_zsh_dir, "templates", "zshrc.zsh-template")
-			  FileUtils.cp(template_path, zshrc_path)
-			  puts "Installed new .zshrc from Oh My Zsh template."
+		# Install new .zshrc from Oh My Zsh template
+		template_path = File.join(oh_my_zsh_dir, "templates", "zshrc.zsh-template")
+		FileUtils.cp(template_path, zshrc_path)
+		puts "Installed new .zshrc from Oh My Zsh template."
 	  end
 
 	  # Check if existing .zshrc contains the Oh My Zsh source line
@@ -52,6 +52,27 @@ cask "oh-my-zsh" do
 	  puts "Oh My Zsh installation complete! Restart your terminal or source ~/.zshrc to apply changes."
 	end
 
+	uninstall_postflight do
+	  oh_my_zsh_dir = File.expand_path("~/.oh-my-zsh")
+	  if File.directory?(oh_my_zsh_dir)
+		FileUtils.rm_rf(oh_my_zsh_dir)
+		puts "Removed Oh My Zsh directory at #{oh_my_zsh_dir}"
+	  end
+
+	  zshrc_path = File.expand_path("~/.zshrc")
+	  if File.exist?(zshrc_path)
+		zshrc_content = File.read(zshrc_path)
+		if zshrc_content.include?('source $ZSH/oh-my-zsh.sh')
+		  # Remove the Oh My Zsh source line
+		  zshrc_content.sub!('source $ZSH/oh-my-zsh.sh', '')
+		  File.write(zshrc_path, zshrc_content)
+		  puts "Removed Oh My Zsh configuration from #{zshrc_path}"
+		end
+	  end
+
+	  puts "Oh My Zsh has been uninstalled. Restart your terminal to complete the process."
+	end
+
 	caveats <<~EOS
 	  Oh My Zsh has been installed in your home directory (~/.oh-my-zsh).
 	  A new .zshrc has been set up from the Oh My Zsh template.
@@ -63,4 +84,4 @@ cask "oh-my-zsh" do
 	  To uninstall Oh My Zsh, run:
 		  brew uninstall --cask oh-my-zsh
 	EOS
-  end
+end

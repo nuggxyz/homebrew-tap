@@ -1,6 +1,5 @@
 cask "zshrc-manager" do
 	version "1.0.0"
-	sha256 :no_check
 
 	depends_on cask: "walteh/tap/oh-my-zsh"
 	depends_on formula: "zsh-completions"
@@ -8,10 +7,13 @@ cask "zshrc-manager" do
 	depends_on formula: "zsh-autocomplete"
 	depends_on formula: "zsh-fast-syntax-highlighting"
 
-	url "file:///dev/null" # No actual file; this is for configuration
 	name "ZshRC Manager"
 	desc "Manages Zsh configuration, including completions and Homebrew integration"
-	homepage "https://example.com"
+	homepage "https://github.com/walteh/homebrew-tap"
+
+	# https://apple.stackexchange.com/a/351612
+	url "file:///dev/null"
+	sha256 "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 	postflight do
 	  zshrc_path = File.expand_path("~/.zshrc")
@@ -137,8 +139,6 @@ cask "zshrc-manager" do
 
 	  puts "Zsh completions have been configured in #{zshrc_manager_path}/zshrc-manager.plugin.zsh."
 
-	  # replace source $ZSH/oh-my-zsh.sh with source $ZSH/oh-my-zsh.sh && source $HOMEBREW_PREFIX/share/zshrc-manager/zshrc-manager.plugin.zsh
-
 	if File.exist?(zshrc_path)
 		zshrc_content = File.read(zshrc_path)
 		if zshrc_content.include?('source $ZSH/oh-my-zsh.sh')
@@ -163,19 +163,45 @@ cask "zshrc-manager" do
 		else
 			odie "source $ZSH/oh-my-zsh.sh not found in #{zshrc_path}. Please install oh-my-zsh cask first."
 		end
-
-		# error if source $ZSH/oh-my-zsh.sh is not found
-
 	else
 		odie "The .zshrc file does not exist. Please install oh-my-zsh cask first."
 	end
-
-
-
 	  puts "Zsh completions have been configured in #{zshrc_path}. Restart your terminal to apply changes."
 	end
 
+	uninstall_postflight do
+		zshrc_path = File.expand_path("~/.zshrc")
 
+		if File.exist?("/opt/homebrew/bin") # Apple Silicon
+		  brew_prefix = "/opt/homebrew"
+		elsif File.exist?("/usr/local/bin") # Intel
+		  brew_prefix = "/usr/local"
+		else
+		  odie "Homebrew is required but not found. Install it from https://brew.sh"
+		end
+
+		zshrc_manager_path = File.expand_path("#{brew_prefix}/share/zshrc-manager")
+
+		fixed = "source #{zshrc_manager_path}"+'/zshrc-manager.plugin.zsh && source $ZSH/oh-my-zsh.sh'
+
+		if File.exist?(zshrc_path)
+			zshrc_content = File.read(zshrc_path)
+			if zshrc_content.include?(fixed)
+				zshrc_content.gsub!(fixed, 'source $ZSH/oh-my-zsh.sh')
+				File.open(zshrc_path, "w") do |file|
+					file.puts zshrc_content
+				end
+				puts "Removed Zsh completions from #{zshrc_path}"
+			end
+		end
+
+		if File.directory?(zshrc_manager_path)
+			FileUtils.rm_rf(zshrc_manager_path)
+			puts "Removed #{zshrc_manager_path} directory"
+		end
+
+		puts "Zshrc manager has been uninstalled. Restart your terminal to apply changes."
+	end
 
 	caveats <<~EOS
 	  This cask manages your ~/.zshrc file to enable Homebrew and Zsh completions.
