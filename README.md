@@ -1,1 +1,1 @@
-# nuggxyz/homebrew-tap
+# walteh/homebrew-tap
