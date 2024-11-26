@@ -1,8 +1,8 @@
 # walteh/homebrew-tap
 
-Personal [Homebrew](https://brew.sh) tap for my custom formulae.
+Personal [Homebrew](https://brew.sh) tap for my custom formulae and casks.
 
-## Available Formulae
+## Available Casks
 
 1. [screenshots-in-dock](#screenshots-in-dock)
 
@@ -18,7 +18,7 @@ Configures macOS to save screenshots to a dedicated `~/Screenshots` folder and a
 
 #### Installation
 ```bash
-brew install walteh/tap/screenshots-in-dock
+brew install --cask walteh/tap/screenshots-in-dock
 ```
 
 ## Contributing
