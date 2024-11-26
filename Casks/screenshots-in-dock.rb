@@ -25,7 +25,7 @@ cask "screenshots-in-dock" do
 		  odie "dockutil is required but not found. Install it with: brew install dockutil"
 		end
 
-		screenshot_dir = File.expand_path("~/Screenshots2/")
+		screenshot_dir = File.expand_path("~/Screenshots/")
 
 		unless File.exist?(screenshot_dir)
 		  # Create the Screenshots folder
