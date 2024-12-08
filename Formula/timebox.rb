@@ -10,8 +10,11 @@ class Timebox < Formula
 	depends_on "python"
 
 	def install
-		# Create virtualenv with pip
-		virtualenv_create(libexec, "python3", system_site_packages: false, with_pip: true)
+		# Create virtualenv
+		virtualenv_create(libexec)
+
+		# Ensure pip is up to date
+		system libexec/"bin/python", "-m", "pip", "install", "--upgrade", "pip"
 
 		# Install the package
 		system libexec/"bin/pip", "install", "."
