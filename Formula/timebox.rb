@@ -10,9 +10,14 @@ class Timebox < Formula
 	depends_on "python"
 
 	def install
-	  virtualenv_create(libexec)
-	  system libexec/"bin/pip", "install", "."
-	  (bin/"timebox").write_env_script libexec/"bin/timebox", PATH: "#{libexec}/bin:${PATH}"
+		# Create virtualenv with pip
+		virtualenv_create(libexec, "python3", system_site_packages: false, with_pip: true)
+
+		# Install the package
+		system libexec/"bin/pip", "install", "."
+
+		# Create the executable script
+		(bin/"timebox").write_env_script libexec/"bin/timebox", PATH: "#{libexec}/bin:${PATH}"
 	end
 
 	service do
@@ -23,4 +28,4 @@ class Timebox < Formula
 	  working_dir HOMEBREW_PREFIX
 	  environment_variables HOMEBREW_LOGS: var/"log"
 	end
-  end
+end
