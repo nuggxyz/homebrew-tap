@@ -13,16 +13,6 @@ class Timebox < Formula
 	# 	pip install strip-tags homebrew-pypi-poet
 	#   poet -f timebox
 
-	resource "pyobjc-core" do
-	  url "https://files.pythonhosted.org/packages/5d/07/2b3d63c0349fe4cf34d787a52a22faa156225808db2d1531fe58fabd779d/pyobjc_core-10.3.2.tar.gz"
-	  sha256 "dbf1475d864ce594288ce03e94e3a98dc7f0e4639971eb1e312bdf6661c21e0e"
-	end
-
-	resource "pyobjc-framework-Cocoa" do
-	  url "https://files.pythonhosted.org/packages/39/41/4f09a5e9a6769b4dafb293ea597ed693cc0def0e07867ad0a42664f530b6/pyobjc_framework_cocoa-10.3.2.tar.gz"
-	  sha256 "673968e5435845bef969bfe374f31a1a6dc660c98608d2b84d5cae6eafa5c39d"
-	end
-
 	resource "rumps" do
 	  url "https://files.pythonhosted.org/packages/b2/e2/2e6a47951290bd1a2831dcc50aec4b25d104c0cf00e8b7868cbd29cf3bfe/rumps-0.4.0.tar.gz"
 	  sha256 "17fb33c21b54b1e25db0d71d1d793dc19dc3c0b7d8c79dc6d833d0cffc8b1596"
@@ -39,7 +29,8 @@ class Timebox < Formula
 	end
 
 	def install
-	  virtualenv_install_with_resources
+		virtualenv_install_with_resources
+		(bin/"timebox").write_env_script libexec/"bin/timebox", PATH: "#{libexec}/bin:${PATH}"
 	end
 
 	test do
