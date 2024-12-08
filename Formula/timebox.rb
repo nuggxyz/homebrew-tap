@@ -27,7 +27,6 @@ class Timebox < Formula
 
 	def install
 		virtualenv_install_with_resources
-		(bin/"timebox").write_env_script libexec/"bin/timebox", PATH: "#{libexec}/bin:${PATH}"
 	end
 
 	test do
