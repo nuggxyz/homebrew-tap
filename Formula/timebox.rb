@@ -3,8 +3,8 @@ class Timebox < Formula
 
 	desc "Timeboxing utility for Things 3 in the macOS menu bar"
 	homepage "https://github.com/walteh/timebox"
-	url "https://github.com/walteh/timebox/archive/refs/tags/v0.6.1.tar.gz"
-	sha256 "6430daf924dfb7c9aa6e67da93b2dfa7b4478d500e9de52a0a98fa279cdf3b1f"
+	url "https://github.com/walteh/timebox/archive/refs/tags/v0.6.2.tar.gz"
+	sha256 "d5558cd419c8d46bdc958064cb97f963d1ea793866414c025906ec15033512ed"
 	license "MIT"
 
 	depends_on "python3"
